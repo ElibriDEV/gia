@@ -1,31 +1,18 @@
-const ordinaryCQuestionIndexes = new Set([
-  0,
-  1,
-  2,
-  3,
-  28,
-  29,
-  38,
-  44,
-  49,
-]);
-
 window.QUIZ_CATEGORIES = [
   {
-    id: 'c',
+    id: 'c-cpp',
     sourceFile: 'C.csv',
-    title: 'Си',
-    href: './c-basic.html',
-    description: 'Вопросы, специфичные для C и не относящиеся к общим темам C/C++.',
-    filter: (question, index) => ordinaryCQuestionIndexes.has(index),
+    title: 'C/C++',
+    href: './c.html',
+    description: 'Объединенный раздел по C, C++, общим механизмам C/C++, инструментам и программной инженерии.',
+    order: 'stable-shuffle',
   },
   {
-    id: 'cpp',
-    sourceFile: 'C.csv',
-    title: 'C++ и общее C/C++',
-    href: './c.html',
-    description: 'Вопросы по C++, общим механизмам C/C++, инструментам и программной инженерии.',
-    filter: (question, index) => !ordinaryCQuestionIndexes.has(index),
+    id: 'csharp',
+    sourceFile: 'CSharp.csv',
+    title: 'C#',
+    href: './csharp.html',
+    description: 'Вопросы по C#, типам, классам, структурам, модификаторам, исключениям и небезопасному коду.',
   },
   {
     id: 'security',
@@ -45,8 +32,36 @@ window.getQuizCategoryQuestions = function getQuizCategoryQuestions(data, catego
   const source = data[category.sourceFile] || [];
 
   if (typeof category.filter !== 'function') {
+    return applyQuestionOrder(source, category);
+  }
+
+  return applyQuestionOrder(
+    source.filter((question, index) => category.filter(question, index)),
+    category,
+  );
+};
+
+function applyQuestionOrder(source, category) {
+  if (category.order !== 'stable-shuffle') {
     return source;
   }
 
-  return source.filter((question, index) => category.filter(question, index));
-};
+  return source
+    .map((question, index) => ({
+      question,
+      order: hashString(`${category.id}:${index}:${question.question}`),
+    }))
+    .sort((left, right) => left.order - right.order)
+    .map((item) => item.question);
+}
+
+function hashString(value) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0;
+}

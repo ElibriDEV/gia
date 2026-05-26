@@ -1,10 +1,10 @@
-const cacheName = 'gia-trainer-v3';
+const cacheName = 'gia-trainer-v4';
 
 const appShell = [
   './',
   './index.html',
-  './c-basic.html',
   './c.html',
+  './csharp.html',
   './security.html',
   './networks.html',
   './marathon.html',
