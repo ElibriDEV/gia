@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#af3e2a" />
+  <title>ГИА — C++ и общее C/C++</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>C++ и общее C/C++</h1>
+      <p>Выбранный билет: до 16 вопросов. На каждый вопрос: 1 правильный и 3 заранее заданных неправильных варианта.</p>
+      <p><a href="./index.html">← К выбору билета</a></p>
+    </header>
+
+    <section id="quiz-host"></section>
+  </main>
+
+  <script>
+    window.QUIZ_FILE = 'C.csv';
+    window.QUIZ_CATEGORY = 'cpp';
+  </script>
+  <script src="./embedded-data.js"></script>
+  <script src="./quiz-categories.js"></script>
+  <script src="./quiz-page.js" defer></script>
+  <script src="./pwa.js" defer></script>
+</body>
+</html>
