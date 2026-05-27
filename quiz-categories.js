@@ -5,7 +5,6 @@ window.QUIZ_CATEGORIES = [
     title: 'C/C++',
     href: './c.html',
     description: 'Объединенный раздел по C, C++, общим механизмам C/C++, инструментам и программной инженерии.',
-    order: 'stable-shuffle',
   },
   {
     id: 'csharp',
