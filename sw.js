@@ -1,4 +1,4 @@
-const cacheName = 'gia-trainer-v4';
+const cacheName = 'gia-trainer-v5';
 
 const appShell = [
   './',

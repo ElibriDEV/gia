@@ -1,10 +1,14 @@
 const ticketSize = 16;
 const menuHost = document.getElementById('ticket-menu');
+const searchInput = document.getElementById('question-search');
+const searchResults = document.getElementById('search-results');
 
 const data = window.EMBEDDED_QUIZ_DATA || {};
 const quizzes = window.QUIZ_CATEGORIES || [];
+const searchIndex = buildSearchIndex();
 
 menuHost.innerHTML = `${renderAllMarathon()}${quizzes.map((quiz) => renderQuizSection(quiz)).join('')}`;
+initQuestionSearch();
 
 function renderAllMarathon() {
   const totalQuestions = quizzes.reduce((sum, quiz) => sum + getQuestions(quiz).length, 0);
@@ -89,4 +93,73 @@ function getQuestions(quiz) {
   }
 
   return data[quiz.sourceFile] || [];
+}
+
+function initQuestionSearch() {
+  if (!searchInput || !searchResults) {
+    return;
+  }
+
+  searchResults.innerHTML = '<p class="search-empty">Поиск покажет до 50 совпадений по тексту вопроса.</p>';
+  searchInput.addEventListener('input', () => renderSearchResults(searchInput.value));
+}
+
+function buildSearchIndex() {
+  return quizzes.flatMap((quiz) => getQuestions(quiz).map((item, index) => {
+    const ticketNumber = Math.floor(index / ticketSize) + 1;
+    const questionNumber = index + 1;
+
+    return {
+      quiz,
+      item,
+      ticketNumber,
+      questionNumber,
+      haystack: normalizeSearchText(item.question),
+    };
+  }));
+}
+
+function renderSearchResults(rawQuery) {
+  const query = normalizeSearchText(rawQuery);
+
+  if (query.length < 2) {
+    searchResults.innerHTML = '<p class="search-empty">Введите минимум 2 символа для поиска.</p>';
+    return;
+  }
+
+  const matches = searchIndex
+    .filter((entry) => entry.haystack.includes(query))
+    .slice(0, 50);
+
+  if (!matches.length) {
+    searchResults.innerHTML = '<p class="search-empty">Ничего не найдено.</p>';
+    return;
+  }
+
+  searchResults.innerHTML = `
+    <p class="search-count">Найдено: ${matches.length}${matches.length === 50 ? '+' : ''}</p>
+    <div class="search-list">
+      ${matches.map((entry) => renderSearchResult(entry)).join('')}
+    </div>
+  `;
+}
+
+function renderSearchResult(entry) {
+  const href = `${entry.quiz.href}?ticket=${entry.ticketNumber}`;
+  const topic = entry.item.topic ? ` · ${escapeHtml(entry.item.topic)}` : '';
+
+  return `
+    <a class="search-result" href="${href}">
+      <strong>${escapeHtml(entry.quiz.title)} · билет ${entry.ticketNumber}</strong>
+      <span>${escapeHtml(entry.item.question)}</span>
+      <small>Вопрос ${entry.questionNumber}${topic}</small>
+    </a>
+  `;
+}
+
+function normalizeSearchText(value) {
+  return String(value || '')
+    .toLocaleLowerCase('ru-RU')
+    .replace(/ё/g, 'е')
+    .trim();
 }

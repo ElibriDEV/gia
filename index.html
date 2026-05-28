@@ -16,6 +16,18 @@
       <p>Выберите предмет и билет. В каждом билете до 16 вопросов.</p>
     </header>
 
+    <section class="search-panel" aria-labelledby="question-search-title">
+      <div class="search-head">
+        <h2 id="question-search-title">Поиск по вопросам</h2>
+        <p class="meta">Введите часть формулировки, чтобы найти билет с нужным вопросом.</p>
+      </div>
+      <label class="search-field">
+        <span>Запрос</span>
+        <input id="question-search" type="search" placeholder="Например: наследование, TCP, шифрование" autocomplete="off" />
+      </label>
+      <div id="search-results" class="search-results" aria-live="polite"></div>
+    </section>
+
     <section id="ticket-menu" class="ticket-menu"></section>
   </main>
 
